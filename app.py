@@ -11,9 +11,10 @@ import os
 import re
 
 load_dotenv()
+print("🚀 app.py import started")
 
 app = Flask(__name__)
-
+print("✅ Flask app object created")
 # ===== Prompts (define FIRST) =====
 
 DEFAULT_PROMPT = build_system_prompt().strip() + '\n\nReturn JSON only: {"reply":"..."}'
