@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from prompt_builder import build_system_prompt
 from dataset_builder import load_conversations, build_training_examples
 from eval_and_rag import judge_reply, split_holdout, mean
@@ -233,6 +233,42 @@ def retrieve_rag(client_sequence: str, chat_history, k: int = 3):
     scored.sort(key=lambda x: x[0], reverse=True)
     top = scored[:k]
     return [{"id": ex["id"], "score": float(s), "reply": ex["reply"][:400]} for s, ex in top]
+
+
+@app.get("/")
+def home():
+    html = """
+    <html>
+      <head>
+        <title>Issa Compass — Visa AI Assistant</title>
+        <meta charset="utf-8" />
+        <style>
+          body { font-family: Arial, sans-serif; max-width: 820px; margin: 40px auto; padding: 0 16px; }
+          code { background:#f4f4f4; padding:2px 6px; border-radius:6px; }
+          a { text-decoration: none; }
+          .box { background:#fafafa; border:1px solid #eee; padding:16px; border-radius:12px; }
+        </style>
+      </head>
+      <body>
+        <h1>✅ Issa Compass — Self-Learning Visa AI Assistant</h1>
+        <p>This is a deployed Flask API service.</p>
+
+        <div class="box">
+          <p><b>Quick endpoints</b></p>
+          <ul>
+            <li><a href="/health">/health</a> — service status</li>
+            <li><code>POST /generate-reply</code></li>
+            <li><code>POST /train-from-history</code></li>
+            <li><code>POST /evaluate</code></li>
+            <li><a href="/prompt-diff/latest">/prompt-diff/latest</a> — latest prompt diff</li>
+          </ul>
+        </div>
+
+        <p style="margin-top:16px;">Tip: Use the README for full cURL examples.</p>
+      </body>
+    </html>
+    """
+    return Response(html, mimetype="text/html")
 
 
 @app.get("/health")
